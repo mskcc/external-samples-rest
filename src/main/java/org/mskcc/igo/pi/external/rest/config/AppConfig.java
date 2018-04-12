@@ -32,8 +32,8 @@ public class AppConfig {
     @Configuration
     @Profile("prod")
     @PropertySource({
-            "file:src/main/resources/connection.properties",
-            "file:src/main/resources/connection-external.properties"
+            "classpath:/connection.properties",
+            "classpath:/connection-external.properties"
     })
     static class ProdPropertyConfig {
     }
@@ -41,8 +41,8 @@ public class AppConfig {
     @Configuration
     @Profile("dev")
     @PropertySource({
-            "file:src/main/resources/connection-dev.properties",
-            "file:src/main/resources/connection-external-dev.properties"
+            "classpath:/connection-dev.properties",
+            "classpath:/connection-external-dev.properties"
     })
     static class DevPropertyConfig {
     }
