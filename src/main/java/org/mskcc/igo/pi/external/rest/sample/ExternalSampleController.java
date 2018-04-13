@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,8 +61,15 @@ public class ExternalSampleController {
     public ResponseEntity<String> addSample(@RequestBody ExternalSample externalSample) {
         LOGGER.info(String.format("Add sample invoked: %s", externalSample));
 
-        externalSampleGateway.addSample(externalSample);
-        return ResponseEntity.ok().build();
+        try {
+            externalSampleGateway.addSample(externalSample);
+            if (externalSampleGateway.getSample(externalSample.getExternalId()).isPresent())
+                return ResponseEntity.ok().build();
+
+            throw new RuntimeException(String.format("External sample not found after attempt to save"));
+        } catch (Exception e) {
+            throw new RuntimeException(String.format("Error while saving external sample: %s", externalSample), e);
+        }
     }
 
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "Saving sample error")

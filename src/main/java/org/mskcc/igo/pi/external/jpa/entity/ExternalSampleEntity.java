@@ -1,15 +1,17 @@
 package org.mskcc.igo.pi.external.jpa.entity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "external_sample")
 public class ExternalSampleEntity {
     @Id
-    @GeneratedValue
-    private Long id;
+    private String externalId;
 
-    @Column(nullable = false, name = "run_id")
+    @Column(name = "run_id")
     private String runId;
 
     @Column(nullable = false, name = "bam_path")
@@ -26,9 +28,6 @@ public class ExternalSampleEntity {
 
     @Column(name = "cmo_id")
     private String cmoId;
-
-    @Column(nullable = false, name = "external_id", unique = true)
-    private String externalId;
 
     @Column(name = "patient_cmo_id")
     private String patientCmoId;
@@ -47,10 +46,39 @@ public class ExternalSampleEntity {
             name = "sample_class"
     )
     private String sampleClass;
+
     @Column(
             nullable = false
     )
     private int counter;
+
+    @Column(
+            nullable = false
+    )
+    private String sex;
+
+    @Column(
+            nullable = false,
+            name = "oncotree_code"
+    )
+    private String oncotreeCode;
+
+    @Column(
+            nullable = false,
+            name = "bait_version"
+    )
+    private String baitVersion;
+
+    @Column(
+            nullable = false,
+            name = "tissue_site"
+    )
+    private String tissueSite;
+
+    @Column(
+            nullable = false
+    )
+    private String preservationType;
 
     public ExternalSampleEntity(String runId, String bamPath, String externalId, String patientExternalId) {
         this.runId = runId;
@@ -135,22 +163,26 @@ public class ExternalSampleEntity {
         this.patientExternalId = patientExternalId;
     }
 
-    public Long getId() {
-        return this.id;
-    }
 
     @Override
     public String toString() {
-        return "ExternalSample{" +
-                "id=" + id +
-                ", run='" + runId + '\'' +
-                ", origin='" + sampleOrigin + '\'' +
+        return "ExternalSampleEntity{" +
+                "externalId='" + externalId + '\'' +
+                ", runId='" + runId + '\'' +
+                ", sampleOrigin='" + sampleOrigin + '\'' +
                 ", specimenType='" + specimenType + '\'' +
                 ", nucleidAcid='" + nucleidAcid + '\'' +
                 ", cmoId='" + cmoId + '\'' +
-                ", externalId='" + externalId + '\'' +
                 ", patientCmoId='" + patientCmoId + '\'' +
-                ", patientDmpId='" + patientExternalId + '\'' +
+                ", patientExternalId='" + patientExternalId + '\'' +
+                ", tumorNormal='" + tumorNormal + '\'' +
+                ", sampleClass='" + sampleClass + '\'' +
+                ", counter=" + counter +
+                ", sex=" + sex +
+                ", oncotreeCode=" + oncotreeCode +
+                ", baitVersion=" + baitVersion +
+                ", tissueSite=" + tissueSite +
+                ", preservationType=" + preservationType +
                 '}';
     }
 
@@ -176,6 +208,46 @@ public class ExternalSampleEntity {
 
     public void setCounter(int counter) {
         this.counter = counter;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
+    public String getOncotreeCode() {
+        return oncotreeCode;
+    }
+
+    public void setOncotreeCode(String oncotreeCode) {
+        this.oncotreeCode = oncotreeCode;
+    }
+
+    public String getBaitVersion() {
+        return baitVersion;
+    }
+
+    public void setBaitVersion(String baitVersion) {
+        this.baitVersion = baitVersion;
+    }
+
+    public String getTissueSite() {
+        return tissueSite;
+    }
+
+    public void setTissueSite(String tissueSite) {
+        this.tissueSite = tissueSite;
+    }
+
+    public String getPreservationType() {
+        return preservationType;
+    }
+
+    public void setPreservationType(String preservationType) {
+        this.preservationType = preservationType;
     }
 }
 
