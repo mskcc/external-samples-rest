@@ -38,8 +38,8 @@ public class AppConfig {
     @Configuration
     @Profile("dev")
     @PropertySource({
-            "classpath:connection-dev.properties",
-            "classpath:connection-external-dev.properties"
+            "file:connection-dev.properties",
+            "file:connection-external-dev.properties"
     })
     static class DevPropertyConfig {
     }
