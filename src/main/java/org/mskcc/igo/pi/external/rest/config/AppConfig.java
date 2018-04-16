@@ -6,8 +6,6 @@ import org.mskcc.igo.pi.external.rest.sample.ExternalSampleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 @Configuration
@@ -23,24 +21,5 @@ public class AppConfig {
     @Bean
     public ExternalSampleGateway externalSampleGateway() {
         return new JPAExternalSampleGateway(externalSampleRepository);
-    }
-
-    @Configuration
-    @Profile("prod")
-    @PropertySource({
-            "file:connection.properties",
-            "file:connection-external.properties"
-    })
-    static class ProdPropertyConfig {
-
-    }
-
-    @Configuration
-    @Profile("dev")
-    @PropertySource({
-            "file:connection-dev.properties",
-            "file:connection-external-dev.properties"
-    })
-    static class DevPropertyConfig {
     }
 }
