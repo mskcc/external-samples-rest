@@ -63,9 +63,6 @@ dependencies {
 }
 
 bootRun {
-    // @TODO remove after tests
-    System.setProperty("spring.profiles.active", "dev")
-
     systemProperties = System.properties
 
     if (System.getProperty('DEBUG', 'false') == 'true') {
