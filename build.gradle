@@ -4,6 +4,7 @@ version '1.0-SNAPSHOT'
 apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: 'idea'
+apply plugin: 'maven'
 apply plugin: 'org.springframework.boot'
 
 mainClassName = "org.mskcc.igo.pi.external.rest.Application"
@@ -26,10 +27,12 @@ buildscript {
 repositories {
     mavenCentral()
     mavenLocal()
+    maven { url "${nexusUrlReleases}" }
+    maven { url "${nexusUrlSnapshots}" }
 }
 
 dependencies {
-    compile group: 'org.mskcc.common', name:'common-domain', version: '2.4.0-SNAPSHOT'
+    compile group: 'org.mskcc.common', name:'common-domain', version: '2.9.0'
     compile group: 'com.opencsv', name: 'opencsv', version: '4.1'
 
     compile ('org.springframework.boot:spring-boot-starter-log4j2')
@@ -60,9 +63,6 @@ dependencies {
 }
 
 bootRun {
-    // @TODO remove after tests
-    System.setProperty("spring.profiles.active", "dev")
-
     systemProperties = System.properties
 
     if (System.getProperty('DEBUG', 'false') == 'true') {
@@ -73,6 +73,21 @@ bootRun {
 
 run {
     systemProperties = System.properties
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(
+                    url: "${nexusUrlReleases}") {
+                authentication(userName: nexusUsername, password: nexusPassword)
+            }
+            snapshotRepository(
+                    url: "${nexusUrlSnapshots}") {
+                authentication(userName: nexusUsername, password: nexusPassword)
+            }
+        }
+    }
 }
 
 
