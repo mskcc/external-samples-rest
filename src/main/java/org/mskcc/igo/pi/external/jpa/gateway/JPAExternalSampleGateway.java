@@ -6,8 +6,10 @@ import org.mskcc.igo.pi.external.jpa.entity.ExternalSampleEntity;
 import org.mskcc.igo.pi.external.rest.sample.ExternalSampleGateway;
 import org.mskcc.igo.pi.external.rest.sample.ExternalSampleRepository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class JPAExternalSampleGateway implements ExternalSampleGateway {
     private ExternalSampleRepository externalSampleRepository;
@@ -24,6 +26,26 @@ public class JPAExternalSampleGateway implements ExternalSampleGateway {
             return Optional.empty();
 
         return Optional.of(ExternalSampleConverter.convert(externalSampleEntity));
+    }
+
+    @Override
+    public Collection<ExternalSample> getSamplesByCmoPatientId(String patientCmoId) {
+        Collection<ExternalSampleEntity> externalSampleEntities = externalSampleRepository.findByPatientCmoId
+                (patientCmoId);
+
+        return externalSampleEntities.stream()
+                .map(e -> ExternalSampleConverter.convert(e))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Collection<ExternalSample> getSamplesByDmpPatientId(String patientDmpId) {
+        Collection<ExternalSampleEntity> externalSampleEntities = externalSampleRepository.findByPatientExternalId
+                (patientDmpId);
+
+        return externalSampleEntities.stream()
+                .map(e -> ExternalSampleConverter.convert(e))
+                .collect(Collectors.toList());
     }
 
     @Override
