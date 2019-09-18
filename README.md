@@ -8,7 +8,7 @@ Rest service to retrieve DMP samples for IGO
   a) by Cmo patient id
       /samples/patientCmo/<CMO_PATIENT_ID>
   b) by Dmp patient id
-      /samples/patientCmo/<DMP_PATIENT_ID>
+      /samples/patientDmp/<DMP_PATIENT_ID>
 
 Credentials:
 in file /ifs/work/pi/external-samples-rest/prod/application.properties:
