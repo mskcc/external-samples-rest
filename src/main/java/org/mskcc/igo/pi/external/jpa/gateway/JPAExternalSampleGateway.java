@@ -10,8 +10,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class JPAExternalSampleGateway implements ExternalSampleGateway {
     private ExternalSampleRepository externalSampleRepository;
@@ -42,6 +44,26 @@ public class JPAExternalSampleGateway implements ExternalSampleGateway {
         Page<ExternalSampleEntity> all = externalSampleRepository.findAll(pageable);
 
         return ExternalSampleConverter.convert(all);
+    }
+  
+    @Override
+    public Collection<ExternalSample> getSamplesByCmoPatientId(String patientCmoId) {
+        Collection<ExternalSampleEntity> externalSampleEntities = externalSampleRepository.findByPatientCmoId
+                (patientCmoId);
+
+        return externalSampleEntities.stream()
+                .map(e -> ExternalSampleConverter.convert(e))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Collection<ExternalSample> getSamplesByDmpPatientId(String patientDmpId) {
+        Collection<ExternalSampleEntity> externalSampleEntities = externalSampleRepository.findByPatientExternalId
+                (patientDmpId);
+
+        return externalSampleEntities.stream()
+                .map(e -> ExternalSampleConverter.convert(e))
+                .collect(Collectors.toList());
     }
 
     @Override

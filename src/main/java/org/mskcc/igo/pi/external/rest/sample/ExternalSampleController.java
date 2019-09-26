@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,6 +37,38 @@ public class ExternalSampleController {
             return ResponseEntity.ok().body(externalSample.get());
         } catch (Exception e) {
             String message = String.format("Error occurred while retrieving sample with id: %s", externalId);
+            LOGGER.warn(message);
+            throw new RuntimeException(message, e);
+        }
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    @RequestMapping(value = "/samples/patientCmo/{patientCmoId}", method = RequestMethod.GET)
+    public ResponseEntity<Collection<ExternalSample>> getSampleByCmoPatientId(@PathVariable String patientCmoId) {
+        LOGGER.info(String.format("Get samples for patient CMO id %s invoked", patientCmoId));
+
+        try {
+            Collection<ExternalSample> externalSamples = externalSampleGateway.getSamplesByCmoPatientId(patientCmoId);
+            return ResponseEntity.ok().body(externalSamples);
+        } catch (Exception e) {
+            String message = String.format("Error occurred while retrieving sample for patient CMO id: %s",
+                    patientCmoId);
+            LOGGER.warn(message);
+            throw new RuntimeException(message, e);
+        }
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    @RequestMapping(value = "/samples/patientDmp/{patientDmpId}", method = RequestMethod.GET)
+    public ResponseEntity<Collection<ExternalSample>> getSampleByDmpPatientId(@PathVariable String patientDmpId) {
+        LOGGER.info(String.format("Get samples for patient DMP id %s invoked", patientDmpId));
+
+        try {
+            Collection<ExternalSample> externalSamples = externalSampleGateway.getSamplesByDmpPatientId(patientDmpId);
+            return ResponseEntity.ok().body(externalSamples);
+        } catch (Exception e) {
+            String message = String.format("Error occurred while retrieving sample for patient DMP id: %s",
+                    patientDmpId);
             LOGGER.warn(message);
             throw new RuntimeException(message, e);
         }
