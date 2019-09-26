@@ -36,7 +36,8 @@ public class ExternalSampleController {
 
             return ResponseEntity.ok().body(externalSample.get());
         } catch (Exception e) {
-            String message = String.format("Error occurred while retrieving sample with id: %s", externalId);
+            String message = String.format("Error occurred while retrieving sample with id: %s. %s", externalId, e
+                    .getMessage());
             LOGGER.warn(message);
             throw new RuntimeException(message, e);
         }
@@ -51,8 +52,8 @@ public class ExternalSampleController {
             Collection<ExternalSample> externalSamples = externalSampleGateway.getSamplesByCmoPatientId(patientCmoId);
             return ResponseEntity.ok().body(externalSamples);
         } catch (Exception e) {
-            String message = String.format("Error occurred while retrieving sample for patient CMO id: %s",
-                    patientCmoId);
+            String message = String.format("Error occurred while retrieving sample for patient CMO id: %s. %s",
+                    patientCmoId, e.getMessage());
             LOGGER.warn(message);
             throw new RuntimeException(message, e);
         }
@@ -67,8 +68,8 @@ public class ExternalSampleController {
             Collection<ExternalSample> externalSamples = externalSampleGateway.getSamplesByDmpPatientId(patientDmpId);
             return ResponseEntity.ok().body(externalSamples);
         } catch (Exception e) {
-            String message = String.format("Error occurred while retrieving sample for patient DMP id: %s",
-                    patientDmpId);
+            String message = String.format("Error occurred while retrieving sample for patient DMP id: %s. %s",
+                    patientDmpId, e.getMessage());
             LOGGER.warn(message);
             throw new RuntimeException(message, e);
         }
@@ -83,7 +84,7 @@ public class ExternalSampleController {
             List<ExternalSample> externalSamples = externalSampleGateway.getAll();
             return ResponseEntity.ok(externalSamples);
         } catch (Exception e) {
-            String message = "Error occurred while retrieving all samples";
+            String message = "Error occurred while retrieving all samples " + e.getMessage();
             LOGGER.warn(message);
             throw new RuntimeException(message, e);
         }
@@ -96,7 +97,7 @@ public class ExternalSampleController {
             @RequestParam("size") int size,
             @RequestParam(value = "sort", required = false) String sort,
             @RequestParam(value = "direction", required = false) String direction) {
-        LOGGER.info("Get all samples invoked");
+        LOGGER.info("Get paginated samples invoked");
 
         try {
             Page<ExternalSample> externalSamples = externalSampleGateway.findPaginated(page, size, sort, direction);
@@ -107,7 +108,7 @@ public class ExternalSampleController {
 
             return ResponseEntity.ok(externalSamples);
         } catch (Exception e) {
-            String message = "Error occurred while retrieving all samples";
+            String message = String.format("Error occurred while retrieving all samples. %s", e.getMessage());
             LOGGER.warn(message);
             throw new RuntimeException(message, e);
         }
@@ -125,27 +126,8 @@ public class ExternalSampleController {
 
             throw new RuntimeException(String.format("External sample not found after attempt to save"));
         } catch (Exception e) {
-            throw new RuntimeException(String.format("Error while saving external sample: %s", externalSample), e);
-        }
-    }
-
-//    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "Saving sample error")
-//    @ExceptionHandler(Exception.class)
-//    public void savingSampleException(Exception e) {
-//        String message = String.format("Error occurred while saving sample");
-//        LOGGER.warn(message, e);
-//    }
-//
-//    @ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY, reason = "Sample already exists")
-//    @ExceptionHandler(SampleExistsException.class)
-//    public void sampleExists(SampleExistsException e) {
-//        String message = String.format("Sample already exists");
-//        LOGGER.warn(message, e);
-//    }
-
-    static class SampleExistsException extends RuntimeException {
-        public SampleExistsException(String message) {
-            super(message);
+            throw new RuntimeException(String.format("Error while saving external sample: %s. %s", externalSample, e
+                    .getMessage()), e);
         }
     }
 }
