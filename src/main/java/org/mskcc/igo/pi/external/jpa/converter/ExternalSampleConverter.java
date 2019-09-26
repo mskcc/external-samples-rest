@@ -2,7 +2,11 @@ package org.mskcc.igo.pi.external.jpa.converter;
 
 import org.mskcc.domain.external.ExternalSample;
 import org.mskcc.igo.pi.external.jpa.entity.ExternalSampleEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -65,5 +69,14 @@ public class ExternalSampleConverter {
         externalSampleEntity.setTumorNormal(externalSample.getTumorNormal());
 
         return externalSampleEntity;
+    }
+
+    public static Page<ExternalSample> convert(Page<ExternalSampleEntity> all) {
+        List<ExternalSample> externalSamples = new ArrayList<>();
+        for (ExternalSampleEntity externalSampleEntity : all) {
+            externalSamples.add(convert(externalSampleEntity));
+        }
+
+        return new PageImpl<>(externalSamples, new PageRequest(all.getNumber(), all.getSize()), all.getTotalElements());
     }
 }

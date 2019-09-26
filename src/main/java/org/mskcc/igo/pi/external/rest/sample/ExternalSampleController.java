@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.mskcc.domain.external.ExternalSample;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -56,6 +56,30 @@ public class ExternalSampleController {
         }
     }
 
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping(value = "/samples/get", params = {"page", "size"})
+    public ResponseEntity<Page<ExternalSample>> getPaginated(
+            @RequestParam("page") int page,
+            @RequestParam("size") int size,
+            @RequestParam(value = "sort", required = false) String sort,
+            @RequestParam(value = "direction", required = false) String direction) {
+        LOGGER.info("Get all samples invoked");
+
+        try {
+            Page<ExternalSample> externalSamples = externalSampleGateway.findPaginated(page, size, sort, direction);
+            if (page > externalSamples.getTotalPages()) {
+                throw new RuntimeException(String.format("Page %d exceeds total number of pages %s", page,
+                        externalSamples.getTotalPages()));
+            }
+
+            return ResponseEntity.ok(externalSamples);
+        } catch (Exception e) {
+            String message = "Error occurred while retrieving all samples";
+            LOGGER.warn(message);
+            throw new RuntimeException(message, e);
+        }
+    }
+
     @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = "/samples", method = RequestMethod.POST)
     public ResponseEntity<String> addSample(@RequestBody ExternalSample externalSample) {
@@ -72,19 +96,19 @@ public class ExternalSampleController {
         }
     }
 
-    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "Saving sample error")
-    @ExceptionHandler(Exception.class)
-    public void savingSampleException(Exception e) {
-        String message = String.format("Error occurred while saving sample");
-        LOGGER.warn(message, e);
-    }
-
-    @ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY, reason = "Sample already exists")
-    @ExceptionHandler(SampleExistsException.class)
-    public void sampleExists(SampleExistsException e) {
-        String message = String.format("Sample already exists");
-        LOGGER.warn(message, e);
-    }
+//    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "Saving sample error")
+//    @ExceptionHandler(Exception.class)
+//    public void savingSampleException(Exception e) {
+//        String message = String.format("Error occurred while saving sample");
+//        LOGGER.warn(message, e);
+//    }
+//
+//    @ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY, reason = "Sample already exists")
+//    @ExceptionHandler(SampleExistsException.class)
+//    public void sampleExists(SampleExistsException e) {
+//        String message = String.format("Sample already exists");
+//        LOGGER.warn(message, e);
+//    }
 
     static class SampleExistsException extends RuntimeException {
         public SampleExistsException(String message) {
