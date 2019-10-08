@@ -55,7 +55,7 @@ Rest service to retrieve DMP samples for IGO
 “type” : “string”<br/>
 },<br/>
 “counter”: {<br/>
-“type” : “string”<br/>
+“type” : “integer”<br/>
 },<br/>
 “runId”: {<br/>
 “type” : “string”<br/>
